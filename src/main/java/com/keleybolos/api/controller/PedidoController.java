@@ -1,7 +1,7 @@
 package com.keleybolos.api.controller;
 
 import com.keleybolos.api.domain.Pedido;
-import com.keleybolos.api.domain.StatusPedido;
+import com.keleybolos.api.domain.StatusPedido; // <--- O Import que costuma faltar!
 import com.keleybolos.api.dto.PedidoDTO;
 import com.keleybolos.api.repository.PedidoRepository;
 import com.keleybolos.api.service.PedidoService;
@@ -19,7 +19,6 @@ public class PedidoController {
 
     @GetMapping
     public List<Pedido> listar() {
-        // Agora ordena: Pendentes primeiro, depois Concluídos, depois Cancelados
         return repository.findAll();
     }
 
@@ -33,7 +32,7 @@ public class PedidoController {
         service.excluirPedido(id);
     }
 
-    // --- NOVO: MUDAR STATUS ---
+    // Método para atualizar o status (Confirmar/Cancelar)
     @PutMapping("/{id}/status")
     public Pedido atualizarStatus(@PathVariable Long id, @RequestBody StatusPedido status) {
         return service.atualizarStatus(id, status);
