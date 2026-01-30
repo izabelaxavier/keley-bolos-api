@@ -8,7 +8,10 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 
@@ -22,9 +25,11 @@ public class PdfController {
     @GetMapping("/{id}/pdf")
     public ResponseEntity<InputStreamResource> gerarPdf(@PathVariable Long id) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Pedido nao encontrado"));
 
-        ByteArrayInputStream bis = pdfService.gerarComprovante(pedido);
+
+        byte[] pdfBytes = pdfService.gerarComprovante(pedido);
+        ByteArrayInputStream bis = new ByteArrayInputStream(pdfBytes);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=pedido-" + id + ".pdf");

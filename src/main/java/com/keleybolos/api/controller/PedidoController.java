@@ -32,7 +32,6 @@ public class PedidoController {
         service.excluirPedido(id);
     }
 
-    // Método para atualizar o status (Confirmar/Cancelar)
     @PutMapping("/{id}/status")
     public Pedido atualizarStatus(@PathVariable Long id, @RequestBody StatusPedido status) {
         return service.atualizarStatus(id, status);

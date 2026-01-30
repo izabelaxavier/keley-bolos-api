@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keley Bolos - Gestão</title>
+  <title>Keley Bolos - Gestao</title>
   <style>
     body { font-family: 'Segoe UI', sans-serif; background-color: #fdf2f7; padding: 20px; color: #333; }
     .container { max-width: 950px; margin: 0 auto; }
 
     .dashboard { display: flex; gap: 20px; margin-bottom: 25px; }
 
-    /* CARD VERDE (Dinheiro na mão) */
+    /* CARD VERDE (Dinheiro na mao) */
     .card-total { background: linear-gradient(135deg, #198754, #146c43); color: white; padding: 20px; border-radius: 15px; flex: 1; text-align: center; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3); }
     .card-total h3 { margin: 0; font-size: 1.2em; opacity: 0.9; }
     .card-total span { font-size: 2.5em; font-weight: bold; }
@@ -33,7 +33,7 @@
 
     .btn-acao { border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; margin-left: 3px; font-size: 0.9em; transition: 0.2s; }
 
-    /* Cores dos Botões */
+    /* Cores dos Botoes */
     .btn-pdf { background-color: #4dabf7; color: white; }
     .btn-excluir { background-color: #adb5bd; color: white; }
     .btn-confirmar { background-color: #28a745; color: white; }
@@ -79,8 +79,8 @@
       <select id="formaPagamento" onchange="verificarPagamento()">
         <option value="Pix">Pix</option>
         <option value="Dinheiro">Dinheiro</option>
-        <option value="Débito">Débito</option>
-        <option value="Crédito">Crédito (Cartão)</option>
+        <option value="Debito">Debito</option>
+        <option value="Credito">Credito (Cartao)</option>
       </select>
     </div>
     <div id="divTaxa">
@@ -96,7 +96,7 @@
         </select>
       </div>
       <div class="form-group" style="flex: 1;">
-        <label>Preço Unit. (R$):</label>
+        <label>Preco Unit. (R$):</label>
         <input type="number" id="precoUnitario" step="0.01">
       </div>
       <div class="form-group" style="flex: 0.5;">
@@ -116,7 +116,7 @@
       <th>Cliente</th>
       <th>Itens</th>
       <th>Total</th>
-      <th style="text-align: center; width: 180px;">Ações</th>
+      <th style="text-align: center; width: 180px;">Acoes</th>
     </tr>
     </thead>
     <tbody></tbody>
@@ -137,7 +137,8 @@
   function verificarPagamento() {
     const tipo = document.getElementById('formaPagamento').value;
     const divTaxa = document.getElementById('divTaxa');
-    if (tipo === 'Crédito') {
+    // REMOVIDO ACENTO DA VERIFICACAO:
+    if (tipo === 'Credito') {
       divTaxa.style.display = 'block';
       document.getElementById('taxaMaquininha').value = '';
     } else {
@@ -157,7 +158,7 @@
       const tabela = document.querySelector('#tabela tbody');
       tabela.innerHTML = '';
 
-      let caixaReal = 0;   // Dinheiro na mão (CONCLUIDO)
+      let caixaReal = 0;   // Dinheiro na mao (CONCLUIDO)
       let aReceber = 0;    // Dinheiro esperando (AGUARDANDO)
 
       // Ordenar: Pendentes primeiro
