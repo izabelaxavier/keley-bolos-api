@@ -1,7 +1,7 @@
 package com.keleybolos.api.controller;
 
 import com.keleybolos.api.domain.Pedido;
-import com.keleybolos.api.domain.StatusPedido; // <--- O Import que costuma faltar!
+import com.keleybolos.api.domain.StatusPedido;
 import com.keleybolos.api.dto.PedidoDTO;
 import com.keleybolos.api.repository.PedidoRepository;
 import com.keleybolos.api.service.PedidoService;
