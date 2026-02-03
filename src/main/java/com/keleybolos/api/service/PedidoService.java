@@ -67,6 +67,24 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    public Pedido registrarPagamento(Long pedidoId, BigDecimal valorPago) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+
+        BigDecimal minimo = pedido.getValorTotal().multiply(new BigDecimal("0.5"));
+
+        if (valorPago.compareTo(minimo) < 0) {
+            throw new RuntimeException("Pagamento minimo de 50% necessario");
+        }
+
+        pedido.setValorPago(valorPago);
+        pedido.setDataPagamento(LocalDateTime.now());
+        pedido.setStatus(StatusPedido.PAGO);
+
+        return pedidoRepository.save(pedido);
+    }
+
+
     public void excluirPedido(Long id) {
         if (pedidoRepository.existsById(id)) {
             pedidoRepository.deleteById(id);

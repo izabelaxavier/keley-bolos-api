@@ -24,8 +24,10 @@ public class Pedido {
     private String formaPagamento;
     private BigDecimal taxaMaquininha;
 
-    // --- NOVO CAMPO: STATUS ---
-    @Enumerated(EnumType.STRING) // Salva como texto no banco ("CANCELADO", etc)
+    private BigDecimal valorPago;
+    private LocalDateTime dataPagamento;
+
+    @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
