@@ -16,6 +16,11 @@ public class PdfService {
 
     public byte[] gerarComprovante(Pedido pedido) {
 
+        if (pedido.getStatus() == StatusPedido.AGUARDANDO_PAGAMENTO) {
+            throw new RuntimeException("Pedido ainda não possui pagamento mínimo para gerar comprovante");
+        }
+
+
         if (pedido.getStatus() != StatusPedido.PAGO) {
             throw new RuntimeException("Pedido ainda nao foi pago");
         }

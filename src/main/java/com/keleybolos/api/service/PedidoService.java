@@ -71,15 +71,19 @@ public class PedidoService {
         Pedido pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-        BigDecimal minimo = pedido.getValorTotal().multiply(new BigDecimal("0.5"));
+        BigDecimal totalPago = pedido.getValorPago() == null
+                ? valorPago
+                : pedido.getValorPago().add(valorPago);
 
-        if (valorPago.compareTo(minimo) < 0) {
-            throw new RuntimeException("Pagamento minimo de 50% necessario");
+        pedido.setValorPago(totalPago);
+
+        if (totalPago.compareTo(pedido.getValorTotal()) >= 0) {
+            pedido.setStatus(StatusPedido.PAGO);
+        } else if (totalPago.compareTo(pedido.getValorTotal().multiply(new BigDecimal("0.5"))) >= 0) {
+            pedido.setStatus(StatusPedido.PARCIALMENTE_PAGO);
+        } else {
+            pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
         }
-
-        pedido.setValorPago(valorPago);
-        pedido.setDataPagamento(LocalDateTime.now());
-        pedido.setStatus(StatusPedido.PAGO);
 
         return pedidoRepository.save(pedido);
     }

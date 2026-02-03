@@ -2,6 +2,6 @@ package com.keleybolos.api.domain;
 
 public enum StatusPedido {
     AGUARDANDO_PAGAMENTO,
-    CONCLUIDO,
+    PARCIALMENTE_PAGO,
     PAGO, CANCELADO
 }

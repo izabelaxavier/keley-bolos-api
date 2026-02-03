@@ -24,7 +24,7 @@ public class Pedido {
     private String formaPagamento;
     private BigDecimal taxaMaquininha;
 
-    private BigDecimal valorPago;
+    private BigDecimal valorPago = BigDecimal.ZERO;
     private LocalDateTime dataPagamento;
 
     @Enumerated(EnumType.STRING)
