@@ -35,7 +35,7 @@ public class PedidoService {
         pedido.setFormaPagamento(dto.getFormaPagamento());
         pedido.setTaxaMaquininha(dto.getTaxaMaquininha() != null ? dto.getTaxaMaquininha() : BigDecimal.ZERO);
 
-        // --- DEFINE O STATUS INICIAL ---
+
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
 
         BigDecimal totalPedido = BigDecimal.ZERO;
@@ -75,10 +75,10 @@ public class PedidoService {
         }
     }
 
-    // --- NOVO MÉTODO PARA MUDAR STATUS ---
-    public Pedido atualizarStatus(Long id, StatusPedido novoStatus) {
+      public Pedido atualizarStatus(Long id, StatusPedido novoStatus) {
         Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
         pedido.setStatus(novoStatus);
         return pedidoRepository.save(pedido);
     }
 }
+
