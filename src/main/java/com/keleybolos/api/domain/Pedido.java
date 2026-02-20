@@ -18,8 +18,8 @@ public class Pedido {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    private LocalDateTime dataHora;
-    private BigDecimal valorTotal;
+    private LocalDateTime dataHora = LocalDateTime.now();
+    private BigDecimal valorTotal = BigDecimal.ZERO;
 
     private String formaPagamento;
     private BigDecimal taxaMaquininha;
@@ -27,9 +27,9 @@ public class Pedido {
     private BigDecimal valorPago = BigDecimal.ZERO;
     private LocalDateTime dataPagamento;
 
-    @Enumerated(EnumType.STRING)
-    private StatusPedido status;
+    @Enumerated(EnumType.STRING) // Garante que salve "PAGO" em vez de "1" no banco
+    private StatusPedido status = StatusPedido.AGUARDANDO_PAGAMENTO;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens;
 }

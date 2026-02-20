@@ -50,18 +50,6 @@ public class PedidoController {
         return pedidoService.registrarPagamento(id, valorPago);
     }
 
-    @GetMapping("/{id}/pdf")
-    public byte[] gerarPdf(@PathVariable Long id) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
-
-        if (pedido.getStatus() != StatusPedido.CONCLUIDO) {
-            throw new RuntimeException("Pedido ainda não está pago");
-        }
-
-        return pdfService.gerarComprovante(pedido);
-    }
-
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
         pedidoService.excluirPedido(id);

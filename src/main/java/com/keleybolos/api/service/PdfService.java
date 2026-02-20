@@ -2,99 +2,85 @@ package com.keleybolos.api.service;
 
 import com.keleybolos.api.domain.ItemPedido;
 import com.keleybolos.api.domain.Pedido;
-import com.keleybolos.api.domain.StatusPedido;
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.awt.Color;
 
 @Service
 public class PdfService {
 
     public byte[] gerarComprovante(Pedido pedido) {
-
-        if (pedido.getStatus() == StatusPedido.AGUARDANDO_PAGAMENTO) {
-            throw new RuntimeException("Pedido ainda não possui pagamento mínimo para gerar comprovante");
-        }
-
-
-        if (pedido.getStatus() != StatusPedido.PAGO) {
-            throw new RuntimeException("Pedido ainda nao foi pago");
-        }
-
-        if (pedido.getStatus() == StatusPedido.AGUARDANDO_PAGAMENTO) {
-            throw new RuntimeException(
-                    "Pedido ainda não possui pagamento confirmado para gerar comprovante."
-            );
-        }
-
-        Document document = new Document();
+        Document document = new Document(PageSize.A6, 20, 20, 20, 20);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
         try {
             PdfWriter.getInstance(document, out);
             document.open();
 
+            // LÓGICA INFALÍVEL:
+            // Se o valorPago for maior que zero ou o status for PAGO, ele tira o aviso
+            boolean jaRecebeuDinheiro = (pedido.getValorPago() != null && pedido.getValorPago().compareTo(BigDecimal.ZERO) > 0);
+            boolean statusTaPago = (pedido.getStatus() != null && pedido.getStatus().toString().equalsIgnoreCase("PAGO"));
 
-            Font fonteTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-            Paragraph titulo = new Paragraph("KELEY BOLOS - Comprovante", fonteTitulo);
+            if (!jaRecebeuDinheiro && !statusTaPago) {
+                Font fAviso = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.RED);
+                Paragraph aviso = new Paragraph("PAGAMENTO PENDENTE", fAviso);
+                aviso.setAlignment(Element.ALIGN_CENTER);
+                document.add(aviso);
+                document.add(new Paragraph("________________________________", fAviso));
+            }
+
+            // VOLTANDO O VISUAL BONITO QUE VOCÊ QUERIA
+            Font fTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, new Color(255, 105, 180));
+            Font fTexto = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
+            Font fNegrito = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, Color.BLACK);
+
+            Paragraph titulo = new Paragraph("KELEY BOLOS", fTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
             document.add(titulo);
             document.add(new Paragraph(" "));
 
+            document.add(new Paragraph("Pedido nº: " + pedido.getId(), fTexto));
+            document.add(new Paragraph("Cliente: " + (pedido.getCliente() != null ? pedido.getCliente().getNome() : "Consumidor"), fTexto));
+            document.add(new Paragraph("Data: " + pedido.getDataHora(), fTexto));
+            document.add(new Paragraph(" "));
 
-            document.add(new Paragraph("Cliente: " + pedido.getCliente().getNome()));
-            document.add(new Paragraph("Telefone: " + pedido.getCliente().getTelefone()));
-            document.add(new Paragraph("Pedido #: " + pedido.getId()));
-            document.add(new Paragraph("Status: " + pedido.getStatus()));
-            document.add(new Paragraph("------------------------------------------------"));
+            PdfPTable table = new PdfPTable(new float[]{1, 4, 2});
+            table.setWidthPercentage(100);
+            table.addCell(new Phrase("Qtd", fNegrito));
+            table.addCell(new Phrase("Produto", fNegrito));
+            table.addCell(new Phrase("Total", fNegrito));
 
-
-            document.add(new Paragraph("ITENS DO PEDIDO:"));
-            NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-
-            for (ItemPedido item : pedido.getItens()) {
-                String linha = String.format(
-                        "%dx %s - %s",
-                        item.getQuantidade(),
-                        item.getProduto().getNome(),
-                        nf.format(item.getPrecoVenda())
-                );
-                document.add(new Paragraph(linha));
-
-                if (item.getObservacao() != null && !item.getObservacao().isEmpty()) {
-                    document.add(new Paragraph("   Obs: " + item.getObservacao()));
+            if (pedido.getItens() != null) {
+                for (ItemPedido item : pedido.getItens()) {
+                    table.addCell(new Phrase(item.getQuantidade().toString(), fTexto));
+                    table.addCell(new Phrase(item.getProduto().getNome(), fTexto));
+                    table.addCell(new Phrase(nf.format(item.getPrecoVenda()), fTexto));
                 }
             }
+            document.add(table);
 
-            document.add(new Paragraph("------------------------------------------------"));
-
-
-            document.add(new Paragraph("Forma de Pagamento: " + pedido.getFormaPagamento()));
-
-            if (pedido.getTaxaMaquininha() != null && pedido.getTaxaMaquininha().doubleValue() > 0) {
-                document.add(new Paragraph(
-                        "Taxa Maquininha: " + nf.format(pedido.getTaxaMaquininha())
-                ));
-            }
-
-            Font fonteTotal = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
-            Paragraph total = new Paragraph(
-                    "VALOR TOTAL: " + nf.format(pedido.getValorTotal()),
-                    fonteTotal
-            );
+            document.add(new Paragraph(" "));
+            Paragraph total = new Paragraph("TOTAL: " + nf.format(pedido.getValorTotal()), fTitulo);
             total.setAlignment(Element.ALIGN_RIGHT);
             document.add(total);
 
             document.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        } catch (Exception e) { e.printStackTrace(); }
         return out.toByteArray();
+    }
+
+    private PdfPCell criarCelula(String texto, Font fonte) {
+        PdfPCell cell = new PdfPCell(new Phrase(texto, fonte));
+        cell.setBorder(Rectangle.NO_BORDER);
+        return cell;
     }
 }
