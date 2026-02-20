@@ -10,15 +10,12 @@ import org.springframework.context.annotation.Configuration;
 public class CargaUsuario {
 
     @Bean
-    CommandLineRunner initDatabase(UsuarioRepository repository) {
+    CommandLineRunner carregarUsuarios(UsuarioRepository repository) {
         return args -> {
+            // Cria a conta da Dona se não existir
             if (repository.count() == 0) {
-                // Criando o seu acesso padrão
-                Usuario admin = new Usuario();
-                admin.setLogin("izabela"); // Pode mudar para o que quiser
-                admin.setSenha("12345");   // Por enquanto sem criptografia para facilitar
-                repository.save(admin);
-                System.out.println("USUÁRIO IZABELA CRIADO COM SUCESSO!");
+                repository.save(new Usuario(null, "Keley", "keley", "123", "DONA"));
+                repository.save(new Usuario(null, "Atendente", "func", "123", "FUNCIONARIO"));
             }
         };
     }

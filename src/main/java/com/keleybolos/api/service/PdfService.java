@@ -8,7 +8,6 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.awt.Color;
@@ -25,36 +24,26 @@ public class PdfService {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            // LÓGICA INFALÍVEL:
-            // Se o valorPago for maior que zero ou o status for PAGO, ele tira o aviso
-            boolean jaRecebeuDinheiro = (pedido.getValorPago() != null && pedido.getValorPago().compareTo(BigDecimal.ZERO) > 0);
-            boolean statusTaPago = (pedido.getStatus() != null && pedido.getStatus().toString().equalsIgnoreCase("PAGO"));
-
-            if (!jaRecebeuDinheiro && !statusTaPago) {
-                Font fAviso = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.RED);
-                Paragraph aviso = new Paragraph("PAGAMENTO PENDENTE", fAviso);
-                aviso.setAlignment(Element.ALIGN_CENTER);
-                document.add(aviso);
-                document.add(new Paragraph("________________________________", fAviso));
-            }
-
-            // VOLTANDO O VISUAL BONITO QUE VOCÊ QUERIA
+            // Fontes
             Font fTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, new Color(255, 105, 180));
             Font fTexto = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
             Font fNegrito = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, Color.BLACK);
 
+            // Cabeçalho
             Paragraph titulo = new Paragraph("KELEY BOLOS", fTitulo);
             titulo.setAlignment(Element.ALIGN_CENTER);
             document.add(titulo);
-            document.add(new Paragraph(" "));
 
-            document.add(new Paragraph("Pedido nº: " + pedido.getId(), fTexto));
+            document.add(new Paragraph("--------------------------------------------------", fTexto));
+            document.add(new Paragraph("Pedido nº: " + pedido.getId(), fNegrito));
             document.add(new Paragraph("Cliente: " + (pedido.getCliente() != null ? pedido.getCliente().getNome() : "Consumidor"), fTexto));
-            document.add(new Paragraph("Data: " + pedido.getDataHora(), fTexto));
+            document.add(new Paragraph("Pagamento: " + (pedido.getFormaPagamento() != null ? pedido.getFormaPagamento() : "Não informado"), fTexto));
             document.add(new Paragraph(" "));
 
+            // Tabela de Itens
             PdfPTable table = new PdfPTable(new float[]{1, 4, 2});
             table.setWidthPercentage(100);
+
             table.addCell(new Phrase("Qtd", fNegrito));
             table.addCell(new Phrase("Produto", fNegrito));
             table.addCell(new Phrase("Total", fNegrito));
@@ -76,11 +65,5 @@ public class PdfService {
             document.close();
         } catch (Exception e) { e.printStackTrace(); }
         return out.toByteArray();
-    }
-
-    private PdfPCell criarCelula(String texto, Font fonte) {
-        PdfPCell cell = new PdfPCell(new Phrase(texto, fonte));
-        cell.setBorder(Rectangle.NO_BORDER);
-        return cell;
     }
 }
