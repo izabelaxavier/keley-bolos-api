@@ -1,0 +1,5 @@
+[phases.build]
+cmds = ["./mvnw -B clean package -DskipTests"]
+
+[start]
+cmd = "java -jar target/*.jar"
