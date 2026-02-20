@@ -3,281 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keley Bolos - Gestao</title>
+  <title>Keley Bolos - Gestão</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background-color: #fdf2f7; padding: 20px; color: #333; }
-    .container { max-width: 950px; margin: 0 auto; }
-
+    body { font-family: 'Segoe UI', sans-serif; background-color: #fdf2f7; padding: 20px; color: #333; margin: 0; }
+    .container { max-width: 900px; margin: 0 auto; display: none; }
+    #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fdf2f7; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+    .login-card h2 { color: #d63384; margin-bottom: 25px; }
+    #areaDona { display: none; }
     .dashboard { display: flex; gap: 20px; margin-bottom: 25px; }
-
-    /* CARD VERDE (Dinheiro na mao) */
-    .card-total { background: linear-gradient(135deg, #198754, #146c43); color: white; padding: 20px; border-radius: 15px; flex: 1; text-align: center; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3); }
-    .card-total h3 { margin: 0; font-size: 1.2em; opacity: 0.9; }
-    .card-total span { font-size: 2.5em; font-weight: bold; }
-
-    /* CARD AMARELO (A Receber) */
-    .card-pendente { background: linear-gradient(135deg, #ffc107, #d39e00); color: white; padding: 20px; border-radius: 15px; flex: 1; text-align: center; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3); }
-    .card-pendente h3 { margin: 0; font-size: 1.2em; opacity: 0.9; color: #333; text-shadow: none; }
-    .card-pendente span { font-size: 2.5em; font-weight: bold; color: #333; }
-
+    .card-total { background: linear-gradient(135deg, #198754, #146c43); color: white; padding: 20px; border-radius: 15px; flex: 1; text-align: center; }
+    .card-pendente { background: linear-gradient(135deg, #ffc107, #d39e00); color: white; padding: 20px; border-radius: 15px; flex: 1; text-align: center; }
     .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
-    h2 { color: #d63384; margin-top: 0; }
-
+    h2 { color: #d63384; border-bottom: 2px solid #fce4ec; padding-bottom: 10px; }
     .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; color: #888; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-    #divTaxa { display: none; background-color: #fff0f6; padding: 10px; border-radius: 8px; border: 1px dashed #d63384; margin-bottom: 15px; }
-
-    .btn-salvar { background-color: #d63384; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; transition: 0.2s; }
-    .btn-salvar:hover { background-color: #b02a6c; }
-
-    .btn-acao { border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; margin-left: 3px; font-size: 0.9em; transition: 0.2s; }
-
-    /* Cores dos Botoes */
-    .btn-pdf { background-color: #4dabf7; color: white; }
-    .btn-excluir { background-color: #adb5bd; color: white; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; color: #666; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+    #divTaxa { display: none; background-color: #fff0f6; padding: 15px; border-radius: 10px; border: 1px dashed #d63384; margin-bottom: 15px; }
+    .btn-salvar { background-color: #d63384; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; }
+    .btn-acao { border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     .btn-confirmar { background-color: #28a745; color: white; }
-    .btn-cancelar { background-color: #dc3545; color: white; }
-    .btn-reativar { background-color: #fd7e14; color: white; }
-
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .btn-pdf { background-color: #4dabf7; color: white; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; }
     th { background-color: #d63384; color: white; padding: 15px; text-align: left; }
-    td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
-    .total { color: #28a745; font-weight: bold; }
-    .obs { color: #999; font-size: 0.85em; font-style: italic; }
-
-    /* ESTILOS DE STATUS */
-    .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; white-space: nowrap; }
-    .status-AGUARDANDO_PAGAMENTO { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    td { padding: 15px; border-bottom: 1px solid #f8f9fa; }
+    .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+    .status-AGUARDANDO_PAGAMENTO { background-color: #fff3cd; color: #856404; }
     .status-CONCLUIDO { background-color: #d4edda; color: #155724; }
-    .status-CANCELADO { background-color: #f8d7da; color: #721c24; text-decoration: line-through; opacity: 0.7; }
-
-    tr.row-CANCELADO td { color: #aaa; }
-    tr.row-CANCELADO .total { color: #aaa; text-decoration: line-through; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="dashboard">
-    <div class="card-total">
-      <h3>💰 Caixa (Recebido)</h3>
-      <span id="totalCaixa">R$ 0,00</span>
+<div id="loginOverlay">
+  <div class="login-card">
+    <h2>🍰 Keley Bolos</h2>
+    <div class="form-group"><label>Usuário:</label><input type="text" id="loginUser"></div>
+    <div class="form-group"><label>Senha:</label><input type="password" id="loginSenha"></div>
+    <button class="btn-salvar" onclick="realizarLogin()">Entrar</button>
+  </div>
+</div>
+
+<div class="container" id="mainContent">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <span id="boasVindas" style="font-size: 18px; color: #d63384;"></span>
+    <button onclick="location.reload()" style="background: none; border: 1px solid #d63384; color: #d63384; padding: 6px 12px; border-radius: 8px; cursor: pointer;">Sair</button>
+  </div>
+
+  <div id="areaDona">
+    <div class="dashboard">
+      <div class="card-total"><h3>💰 Caixa</h3><span id="totalCaixa">R$ 0,00</span></div>
+      <div class="card-pendente"><h3>⏳ A Receber</h3><span id="totalPendente">R$ 0,00</span></div>
     </div>
-    <div class="card-pendente">
-      <h3>⏳ A Receber</h3>
-      <span id="totalPendente">R$ 0,00</span>
-    </div>
+    <div class="card"><h2> Resumo de Vendas</h2><div style="height: 200px;"><canvas id="graficoVendas"></canvas></div></div>
   </div>
 
   <div class="card">
     <h2>🍰 Novo Pedido</h2>
-    <div class="form-group"><label>Cliente:</label><input type="text" id="clienteNome" placeholder="Nome"></div>
-    <div class="form-group"><label>Telefone:</label><input type="text" id="clienteTelefone" placeholder="Telefone"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div class="form-group"><label>Cliente:</label><input type="text" id="clienteNome"></div>
+      <div class="form-group"><label>Telefone:</label><input type="text" id="clienteTelefone"></div>
+    </div>
     <div class="form-group">
-      <label>Forma de Pagamento:</label>
+      <label>Pagamento:</label>
       <select id="formaPagamento" onchange="verificarPagamento()">
         <option value="Pix">Pix</option>
         <option value="Dinheiro">Dinheiro</option>
-        <option value="Debito">Debito</option>
-        <option value="Credito">Credito (Cartao)</option>
+        <option value="Debito">Débito</option>
+        <option value="Credito">Crédito</option>
       </select>
     </div>
-    <div id="divTaxa">
-      <label>💳 Taxa da Maquininha (R$):</label>
-      <input type="number" id="taxaMaquininha" value="0.00" step="0.10">
+    <div id="divTaxa"><label>Taxa Cartão (R$):</label><input type="number" id="taxaMaquininha" value="0.00" step="0.01"></div>
+    <div style="display: flex; gap: 10px; align-items: flex-end;">
+      <div class="form-group" style="flex: 2;"><label>Produto:</label><select id="produtoSelect" onchange="atualizarPreco()"></select></div>
+      <div class="form-group" style="flex: 1;"><label>Preço:</label><input type="number" id="precoUnitario" step="0.01"></div>
+      <div class="form-group" style="flex: 0.5;"><label>Qtd:</label><input type="number" id="quantidade" value="1"></div>
     </div>
-
-    <div style="display: flex; gap: 10px;">
-      <div class="form-group" style="flex: 2;">
-        <label>Produto:</label>
-        <select id="produtoSelect" onchange="atualizarPreco()">
-          <option value="" data-preco="0">Selecione...</option>
-        </select>
-      </div>
-      <div class="form-group" style="flex: 1;">
-        <label>Preco Unit. (R$):</label>
-        <input type="number" id="precoUnitario" step="0.01">
-      </div>
-      <div class="form-group" style="flex: 0.5;">
-        <label>Qtd:</label>
-        <input type="number" id="quantidade" value="1" min="1">
-      </div>
-    </div>
-    <div class="form-group"><label>Obs:</label><input type="text" id="observacao"></div>
+    <div class="form-group"><label>Observação:</label><input type="text" id="observacao"></div>
     <button class="btn-salvar" onclick="salvarPedido()">Salvar Pedido</button>
   </div>
 
-  <h2>Pedidos Realizados</h2>
+  <h2>📋 Pedidos</h2>
   <table id="tabela">
-    <thead>
-    <tr>
-      <th>Status</th>
-      <th>Cliente</th>
-      <th>Itens</th>
-      <th>Total</th>
-      <th style="text-align: center; width: 180px;">Acoes</th>
-    </tr>
-    </thead>
+    <thead><tr><th>Status</th><th>Cliente</th><th>Total</th><th style="text-align: center;">Ações</th></tr></thead>
     <tbody></tbody>
   </table>
 </div>
 
 <script>
-  let listaProdutos = [];
+  let perfilUsuario = '';
+  let meuGrafico = null;
 
-  fetch('/produtos').then(r => r.json()).then(produtos => {
-    listaProdutos = produtos;
-    let select = document.getElementById('produtoSelect');
-    select.innerHTML = '<option value="" data-preco="0">Selecione...</option>';
-    const unicos = [...new Map(produtos.map(item => [item.nome, item])).values()];
-    unicos.forEach(p => select.innerHTML += `<option value="${p.id}">${p.nome}</option>`);
-  });
+  function realizarLogin() {
+    const login = document.getElementById('loginUser').value;
+    const senha = document.getElementById('loginSenha').value;
+    fetch('/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ login, senha }) })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(u => {
+        perfilUsuario = u.cargo;
+        document.getElementById('boasVindas').innerHTML = `Olá, <b>${u.nome}</b>!`;
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        if(perfilUsuario === 'DONA') document.getElementById('areaDona').style.display = 'block';
+        carregarProdutos(); carregarPedidos();
+    }).catch(() => alert("Login inválido!"));
+  }
 
-  function verificarPagamento() {
-    const tipo = document.getElementById('formaPagamento').value;
-    const divTaxa = document.getElementById('divTaxa');
-    // REMOVIDO ACENTO DA VERIFICACAO:
-    if (tipo === 'Credito') {
-      divTaxa.style.display = 'block';
-      document.getElementById('taxaMaquininha').value = '';
-    } else {
-      divTaxa.style.display = 'none';
-      document.getElementById('taxaMaquininha').value = '0';
-    }
+  function carregarProdutos() {
+    fetch('/produtos').then(r => r.json()).then(pros => {
+        let s = document.getElementById('produtoSelect');
+        s.innerHTML = '<option value="">Selecione...</option>';
+        pros.forEach(p => s.innerHTML += `<option value="${p.id}" data-preco="${p.preco}">${p.nome}</option>`);
+    });
   }
 
   function atualizarPreco() {
-    const id = document.getElementById('produtoSelect').value;
-    const produto = listaProdutos.find(p => p.id == id);
-    if(produto) document.getElementById('precoUnitario').value = produto.preco;
+    const s = document.getElementById('produtoSelect');
+    document.getElementById('precoUnitario').value = s.options[s.selectedIndex].getAttribute('data-preco') || 0;
   }
 
-  function carregarPedidos() {
-    fetch('/pedidos').then(r => r.json()).then(pedidos => {
-      const tabela = document.querySelector('#tabela tbody');
-      tabela.innerHTML = '';
-
-      let caixaReal = 0;   // Dinheiro na mao (CONCLUIDO)
-      let aReceber = 0;    // Dinheiro esperando (AGUARDANDO)
-
-      // Ordenar: Pendentes primeiro
-      pedidos.sort((a, b) => {
-        if (a.status === 'AGUARDANDO_PAGAMENTO') return -1;
-        if (b.status === 'AGUARDANDO_PAGAMENTO') return 1;
-        return 0;
-      });
-
-      pedidos.forEach(p => {
-        // SOMA INTELIGENTE: Só soma no Verde se for CONCLUIDO
-        if (p.status === 'CONCLUIDO') {
-          caixaReal += p.valorTotal;
-        } else if (p.status === 'AGUARDANDO_PAGAMENTO') {
-          aReceber += p.valorTotal;
-        }
-
-        let itens = p.itens.map(i => `<b>${i.quantidade}x</b> ${i.produto.nome} ${i.observacao ? '<span class="obs">('+i.observacao+')</span>' : ''}`).join('<br>');
-        let total = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.valorTotal);
-
-        let statusBadge = '';
-        let botoes = '';
-
-        if (p.status === 'AGUARDANDO_PAGAMENTO') {
-          statusBadge = '<span class="status-badge status-AGUARDANDO_PAGAMENTO">🟡 Aguardando Pagamento</span>';
-          botoes = `
-                    <button class="btn-acao btn-confirmar" onclick="mudarStatus(${p.id}, 'CONCLUIDO')" title="Confirmar Pagamento">✅</button>
-                    <button class="btn-acao btn-cancelar" onclick="mudarStatus(${p.id}, 'CANCELADO')" title="Cliente Desistiu">❌</button>
-                    <button class="btn-acao btn-pdf" onclick="gerarPdf(${p.id})">🖨️</button>
-                `;
-        } else if (p.status === 'CONCLUIDO') {
-          statusBadge = '<span class="status-badge status-CONCLUIDO">🟢 Pago</span>';
-          botoes = `
-                    <button class="btn-acao btn-pdf" onclick="gerarPdf(${p.id})">🖨️</button>
-                    <button class="btn-acao btn-excluir" onclick="excluirPedido(${p.id})" title="Apagar">🗑️</button>
-                `;
-        } else if (p.status === 'CANCELADO') {
-          statusBadge = '<span class="status-badge status-CANCELADO">🔴 Cancelado</span>';
-          botoes = `
-                    <button class="btn-acao btn-reativar" onclick="mudarStatus(${p.id}, 'AGUARDANDO_PAGAMENTO')" title="Reativar Pedido">🔄</button>
-                    <button class="btn-acao btn-excluir" onclick="excluirPedido(${p.id})" title="Apagar">🗑️</button>
-                `;
-        }
-
-        if (!p.status) p.status = 'AGUARDANDO_PAGAMENTO';
-
-        tabela.innerHTML += `
-                <tr class="row-${p.status}">
-                    <td>${statusBadge}</td>
-                    <td>${p.cliente.nome}<br><small>${p.cliente.telefone}</small><br><small>(${p.formaPagamento || 'Pix'})</small></td>
-                    <td>${itens}</td>
-                    <td class="total">${total}</td>
-                    <td style="text-align: center;">${botoes}</td>
-                </tr>`;
-      });
-
-      // ATUALIZA OS DOIS PLACARES
-      document.getElementById('totalCaixa').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(caixaReal);
-      document.getElementById('totalPendente').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(aReceber);
-    });
+  function verificarPagamento() {
+    document.getElementById('divTaxa').style.display = (document.getElementById('formaPagamento').value === 'Credito') ? 'block' : 'none';
   }
 
   function salvarPedido() {
-    let taxa = document.getElementById('taxaMaquininha').value;
-    if (!taxa) taxa = 0;
+    const pId = document.getElementById('produtoSelect').value;
+    if(!pId) return alert("Selecione o produto!");
 
     const dados = {
-      cliente: {
-        nome: document.getElementById('clienteNome').value,
-        telefone: document.getElementById('clienteTelefone').value
-      },
+      cliente: { nome: document.getElementById('clienteNome').value, telefone: document.getElementById('clienteTelefone').value },
       formaPagamento: document.getElementById('formaPagamento').value,
-      taxaMaquininha: taxa,
+      taxaMaquininha: parseFloat(document.getElementById('taxaMaquininha').value || 0),
       itens: [{
-        produtoId: document.getElementById('produtoSelect').value,
-        quantidade: document.getElementById('quantidade').value,
-        observacao: document.getElementById('observacao').value,
-        precoPersonalizado: document.getElementById('precoUnitario').value
+        produtoId: parseInt(pId),
+        quantidade: parseInt(document.getElementById('quantidade').value),
+        precoPersonalizado: parseFloat(document.getElementById('precoUnitario').value),
+        observacao: document.getElementById('observacao').value
       }]
     };
 
-    fetch('/pedidos', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(dados)
-    }).then(r => {
-      if(r.ok) {
-        alert("Pedido Criado! 🟡");
-        carregarPedidos();
-        document.getElementById('observacao').value = '';
-        document.getElementById('taxaMaquininha').value = '0';
-        document.getElementById('formaPagamento').value = 'Pix';
-        verificarPagamento();
+    fetch('/pedidos', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados) })
+    .then(r => r.ok ? (alert("Salvo!"), limparCampos(), carregarPedidos()) : alert("Erro ao salvar! Verifique os campos."))
+    .catch(() => alert("Erro de conexão!"));
+  }
+
+  function carregarPedidos() {
+    fetch('/pedidos').then(r => r.json()).then(peds => {
+      const tb = document.querySelector('#tabela tbody');
+      tb.innerHTML = '';
+      let cx = 0, pe = 0, dg = { 'Pix': 0, 'Dinheiro': 0, 'Cartão': 0 };
+      peds.forEach(p => {
+        if (p.status === 'CONCLUIDO') {
+            cx += p.valorTotal;
+            let f = (p.formaPagamento === 'Credito' || p.formaPagamento === 'Debito') ? 'Cartão' : p.formaPagamento;
+            if(dg[f] !== undefined) dg[f] += p.valorTotal;
+        } else pe += p.valorTotal;
+
+        let bt = p.status === 'AGUARDANDO_PAGAMENTO' ?
+            `<button class="btn-confirmar btn-acao" onclick="mudarStatus(${p.id}, 'CONCLUIDO')">✅ Pagar</button>` :
+            `<button class="btn-pdf btn-acao" onclick="window.open('/pedidos/${p.id}/pdf', '_blank')">🖨️ PDF</button>`;
+
+        tb.innerHTML += `<tr><td><span class="status-badge status-${p.status}">${p.status.replace('_', ' ')}</span></td><td>${p.cliente.nome}</td><td>R$ ${p.valorTotal.toFixed(2)}</td><td style="text-align: center;">${bt}</td></tr>`;
+      });
+      if(perfilUsuario === 'DONA') {
+        document.getElementById('totalCaixa').innerText = `R$ ${cx.toFixed(2)}`;
+        document.getElementById('totalPendente').innerText = `R$ ${pe.toFixed(2)}`;
+        renderizarGrafico(dg);
       }
-      else alert("Erro ao salvar.");
     });
   }
 
-  function mudarStatus(id, novoStatus) {
-    fetch(`/pedidos/${id}/status`, {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(novoStatus)
-    }).then(r => {
-      if(r.ok) carregarPedidos();
-    });
+  function mudarStatus(id, st) {
+    fetch(`/pedidos/${id}/status`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(st) }).then(() => carregarPedidos());
   }
 
-  function excluirPedido(id) {
-    if(confirm('Tem certeza? Isso apaga para sempre.')) {
-      fetch(`/pedidos/${id}`, { method: 'DELETE' }).then(r => { if(r.ok) carregarPedidos(); });
-    }
+  function renderizarGrafico(d) {
+    const c = document.getElementById('graficoVendas').getContext('2d');
+    if (meuGrafico) meuGrafico.destroy();
+    meuGrafico = new Chart(c, { type: 'doughnut', data: { labels: Object.keys(d), datasets: [{ data: Object.values(d), backgroundColor: ['#d63384', '#198754', '#4dabf7'] }] }, options: { maintainAspectRatio: false, animation: false } });
   }
 
-  function gerarPdf(id) {
-    window.open(`/pedidos/${id}/pdf`, '_blank');
+  function limparCampos() {
+    document.getElementById('clienteNome').value = ''; document.getElementById('clienteTelefone').value = '';
+    document.getElementById('observacao').value = ''; document.getElementById('produtoSelect').value = '';
+    document.getElementById('precoUnitario').value = ''; document.getElementById('taxaMaquininha').value = '0.00';
   }
-
-  carregarPedidos();
 </script>
 </body>
 </html>
