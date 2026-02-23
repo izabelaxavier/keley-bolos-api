@@ -106,6 +106,7 @@ Após a confirmação do pagamento, o sistema gera automaticamente um comprovant
 
 <div align="center"> <img src="docs/comprovante-pdf.png.png" width="350" alt="Comprovante PDF" /> </div>
 ------
+
 ## ✅ Atualizações Recentes
 
 Adicionado endpoint para atualização de status de pedidos em tempo real
