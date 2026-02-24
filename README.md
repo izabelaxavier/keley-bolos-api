@@ -1,162 +1,117 @@
 # 🍰 Keley Bolos API
 
-Sistema web com backend desenvolvido como projeto de estudo e portfólio, simulando um sistema real para gerenciamento de pedidos e dados da loja Keley Bolos.
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java" alt="Java 17">
+  <img src="https://img.shields.io/badge/Spring_Boot-3-green?style=for-the-badge&logo=spring-boot" alt="Spring Boot 3">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" alt="Railway">
+</p>
 
-O objetivo do projeto é praticar Java + Spring Boot, integração com banco de dados, autenticação de usuários, geração de documentos e deploy em produção.
+> **Status do Projeto:** Em produção 🚀
 
------
-## 🌐 Aplicação em produção
+Sistema web com backend desenvolvido como projeto de estudo e portfólio, simulando um cenário real de gerenciamento de pedidos e dados da loja **Keley Bolos**. O objetivo central é a consolidação de conhecimentos em Java + Spring Boot, segurança, geração de documentos e deploy profissional.
 
+---
+
+## 🌐 Demonstração
 A API está publicada e rodando em produção:
+👉 [Acesse a Keley Bolos API](https://seu-link-da-api-aqui.com)
 
-👉 Keley Bolos API
+---
 
-🚀 Tecnologias utilizadas
+## 🚀 Tecnologias Utilizadas
 
-Backend: Java 17, Spring Boot 3, Spring Data JPA, Hibernate
+* **Backend:** Java 17, Spring Boot 3, Spring Data JPA, Hibernate.
+* **Banco de Dados:** PostgreSQL (Produção) e H2 (Ambiente de testes).
+* **Build & Deploy:** Maven, Docker, Railway.
+* **Documentação & Testes:** Postman.
 
-Banco de dados: PostgreSQL / H2 (ambiente de teste)
+---
 
-Build & Deploy: Maven, Docker, Railway
+## ✨ Evolução e Funcionalidades
 
-Documentação & Testes: Postman
+O sistema evoluiu de uma API simples para uma aplicação com fluxo operacional completo.
 
- ------
-## 🗄️ Banco de dados
+### 🔐 Autenticação e Segurança
+Controle de acesso baseado em perfis (RBAC), garantindo que cada usuário veja apenas o que é relevante para sua função:
+* **Dona da Loja:** Acesso ao painel financeiro e métricas.
+* **Funcionário:** Foco na operação e gestão de pedidos.
+* *As credenciais sensíveis são gerenciadas via variáveis de ambiente, sem exposição no código.*
 
-PostgreSQL em ambiente cloud
+<div align="center">
+  <img src="docs/login.png.png" width="500" alt="Tela de login" />
+</div>
 
-Configuração via variáveis de ambiente
+### 📊 Painel Administrativo (Dona)
+Dashboard estratégico para visualização de desempenho:
+* Total de vendas e valores em caixa.
+* Gráficos de faturamento por forma de pagamento (Pix, Cartão, Dinheiro).
 
-Criação automática das tabelas com hibernate.ddl-auto=update
+<div align="center">
+  <img src="docs/dashboard-dona.png.png" width="600" alt="Dashboard da dona" />
+</div>
 
-Uso de H2 para testes e demonstração
+### 📦 Gestão Operacional (Funcionário)
+Interface focada na agilidade do dia a dia:
+* Cadastro e listagem de pedidos.
+* Controle de status de pagamento e entregas pendentes.
 
------
+<div align="center">
+  <img src="docs/funcionario.png.png" width="400" alt="Tela de funcionário" />
+  <img src="docs/pedido.png.png" width="400" alt="Gestão de pedidos" />
+</div>
 
-## 🔐 Segurança
+### 🧾 Geração de Comprovante PDF
+Após a confirmação do pagamento, o sistema gera automaticamente um comprovante profissional em PDF com todos os dados do pedido.
 
-Nenhuma senha ou credencial sensível é versionada no repositório.
-As configurações utilizam variáveis de ambiente:
+<div align="center">
+  <img src="docs/comprovante-pdf.png.png" width="500" alt="Comprovante PDF" />
+</div>
 
-SPRING_DATASOURCE_URL
-
-DATABASE_USERNAME
-
-DATABASE_PASSWORD
-
------
-
-## ✨ Atualização do Sistema (Última Versão)
-
-O sistema evoluiu de uma API simples para uma aplicação com fluxo completo de operação da loja.
-
-## 🔐 Autenticação de Usuários
-
-Tela de login integrada ao sistema
-
-Controle de acesso por perfil:
-
-Dona da loja → acesso ao painel financeiro
-
-Funcionário → acesso operacional de pedidos
-
-
-<div align="center"> <img src="docs/login.png.png" width="250" alt="Tela de login" /> </div>
-
-------
-## 📊 Painel Administrativo — Área da Dona
-
-Dashboard com visualização de desempenho financeiro da loja.
-Funcionalidades:
-
-Total de vendas
-
-Valores em caixa
-
-Valores a receber
-
-Gráfico de faturamento por forma de pagamento: Pix, Cartão, Dinheiro
-
-Os dados exibidos são fictícios para demonstração.
-
-<div align="center"> <img src="docs/dashboard-dona.png.png" width="450" alt="Dashboard da dona" /> </div>
-
------
-## 📦 Gestão de Pedidos — Área Operacional
-
-Módulo operacional para funcionários.
-Funcionalidades:
-
-Cadastro de novos pedidos
-
-Listagem de pedidos realizados
-
-Controle de status de pagamento
-
-Visualização de pedidos a entregar
-
-<div align="center"> <img src="docs/funcionario.png.png" width="300" alt="Tela de funcionário" /> <img src="docs/pedido.png.png" width="300" alt="Gestão de pedidos" /> </div>
-
------
-## 🧾 Geração de Comprovante em PDF
-
-Após a confirmação do pagamento, o sistema gera automaticamente um comprovante em PDF contendo os dados do pedido.
-
-
-<div align="center"> <img src="docs/comprovante-pdf.png.png" width="350" alt="Comprovante PDF" /> </div>
-
-------
+---
 
 ## ✅ Atualizações Recentes
+* **Real-time:** Novo endpoint para atualização de status de pedidos em tempo real.
+* **Validações:** Melhoria na consistência de dados para evitar erros de entrada.
+* **Padronização:** Ajuste no layout de respostas da API (JSON).
+* **Performance:** Otimização de queries para maior velocidade no PostgreSQL.
+* **Estabilidade:** Correção de bugs de sessão e testes rigorosos com H2.
 
-Adicionado endpoint para atualização de status de pedidos em tempo real
+---
 
-Melhorias na validação de dados do backend para evitar erros de entrada
+## 🛠️ Como rodar o projeto localmente
 
-Ajuste no layout de respostas da API para maior padronização
+1.  **Clone o repositório:**
+    ```bash
+    git clone <url-do-seu-repositorio>
+    ```
 
-Correção de bugs de autenticação e sessão de usuários
+2.  **Configure as variáveis de ambiente:**
+    ```bash
+    export SPRING_DATASOURCE_URL=<url-do-banco>
+    export DATABASE_USERNAME=<usuario>
+    export DATABASE_PASSWORD=<senha>
+    ```
 
-Otimização de queries para maior performance no PostgreSQL
+3.  **Execute via Maven:**
+    ```bash
+    mvn spring-boot:run
+    ```
+    *A aplicação estará disponível em `http://localhost:8080`.*
 
-Testes adicionais realizados com H2 para garantir consistência do sistema
-
------
-
-## ▶️ Como rodar o projeto localmente
-
-Clone o repositório
-
-Configure as variáveis de ambiente do banco
-
-Execute o projeto:
-
-mvn spring-boot:run
-
-A aplicação irá subir por padrão na porta 8080.
-
------
+---
 
 ## 📚 Aprendizados
+Este projeto permitiu a prática profunda de:
+* Estruturação de APIs REST robustas.
+* Integração e persistência de dados relacionais.
+* Controle de acesso e segurança de usuários.
+* Automação de documentos e infraestrutura Cloud.
 
-Estruturação de API REST com Spring Boot
+---
 
-Integração com banco de dados relacional
+## 👩‍💻 Autora
+**Izabela Xavier** *Estudante de Análise e Desenvolvimento de Sistemas* Backend | Java | Spring Boot
 
-Autenticação e controle de acesso
-
-Geração de documentos PDF
-
-Deploy de aplicação backend em produção
-
-Debug e resolução de erros reais de infraestrutura
-
-Organização de projeto para portfólio profissional
-
------
-## ‍💻👩‍💻 Autora:
-
-Izabela Xavier
-Estudante de Análise e Desenvolvimento de Sistemas
-Backend | Java | Spring Boot
+---
