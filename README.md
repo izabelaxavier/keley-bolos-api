@@ -16,7 +16,7 @@ Sistema web com backend desenvolvido como projeto de estudo e portfólio, simula
 
 ## 🌐 Demonstração
 A API está publicada e rodando em produção:
-👉 [Acesse a Keley Bolos API](https://seu-link-da-api-aqui.com)
+👉 [Acesse a Keley Bolos API](https://keley-bolos-api-production.up.railway.app/)
 
 ---
 
