@@ -10,7 +10,10 @@
 
 > **Status do Projeto:** Em produção 🚀
 
-Sistema web com backend desenvolvido como projeto de estudo e portfólio, simulando um cenário real de gerenciamento de pedidos e dados da loja **Keley Bolos**. O objetivo central é a consolidação de conhecimentos em Java + Spring Boot, segurança, geração de documentos e deploy profissional.
+Sistema web fullstack desenvolvido para a confeitaria Keley Bolos, 
+negócio real da minha família. O objetivo foi digitalizar a operação 
+da loja, substituindo controles manuais por um sistema com gestão 
+de pedidos, painel financeiro e geração automática de comprovantes.
 
 ---
 
@@ -27,6 +30,8 @@ A API está publicada e rodando em produção:
 * **Build & Deploy:** Maven, Docker, Railway.
 * **Documentação & Testes:** Postman.
 
+![Status](https://img.shields.io/badge/Status-Em%20Produção-brightgreen)
+![Autor](https://img.shields.io/badge/Feito%20por-Izabela%20Xavier-purple)
 ---
 
 ## ✨ Evolução e Funcionalidades
