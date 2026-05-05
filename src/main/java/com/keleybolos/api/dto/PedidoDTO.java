@@ -9,7 +9,7 @@ public class PedidoDTO {
     private ClienteDTO cliente;
     private List<ItemPedidoDTO> itens;
 
-    // --- NOVOS CAMPOS ---
+
     private String formaPagamento;
     private BigDecimal taxaMaquininha;
 

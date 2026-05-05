@@ -25,6 +25,6 @@ public class ItemPedido {
     private Integer quantidade;
     private String observacao;
 
-    // NOVO CAMPO: O preço que foi cobrado NESTE pedido
+
     private BigDecimal precoVenda;
 }

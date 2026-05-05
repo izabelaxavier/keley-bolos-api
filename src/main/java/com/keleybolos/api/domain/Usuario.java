@@ -16,5 +16,5 @@ public class Usuario {
     private String senha;
 
     // Isso aqui define se é DONA ou FUNCIONARIO
-    private String cargo;
+    private String role;
 }
